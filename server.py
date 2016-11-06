@@ -17,7 +17,7 @@ conn = psycopg2.connect(
         port=url.port
     )
 cur = conn.cursor()
-cur.execute("CREATE TABLE IF NOT EXISTS OBDREADINGS(id SERIAL, reading JSON);")
+cur.execute("""CREATE TABLE IF NOT EXISTS OBDREADINGS(id SERIAL, reading JSON);""")
 print('Database ready to go!')
 
 
@@ -33,7 +33,7 @@ def hello_world():
         reading = request.data
 
         # Store it in the DB
-        cur.execute("INSERT INTO OBDREADINGS(reading) VALUES(%s);", reading)
+        cur.execute("""INSERT INTO OBDREADINGS(reading) VALUES(%s);""", (tuple(reading)))
         conn.commit()
 
         # Send okie-dokie response

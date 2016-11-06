@@ -33,7 +33,7 @@ def hello_world():
         reading = request.data
 
         # Store it in the DB
-        dbquery = str.format("INSERT INTO OBDREADINGS(reading) VALUES({0});", reading)
+        dbquery = str.format("INSERT INTO OBDREADINGS(reading) VALUES(\'{0}\');", reading)
         cur.execute(dbquery)
         conn.commit()
 

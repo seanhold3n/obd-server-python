@@ -1,3 +1,4 @@
+import json
 import os
 import psycopg2
 import urlparse
@@ -17,7 +18,7 @@ conn = psycopg2.connect(
         port=url.port
     )
 cur = conn.cursor()
-cur.execute("""CREATE TABLE IF NOT EXISTS OBDREADINGS(id SERIAL, reading JSON);""")
+cur.execute("""CREATE TABLE IF NOT EXISTS OBDREADINGS(vin TEXT, unix_timestamp INTEGER, latitude DECIMAL(9,6), longitude DECIMAL(9,6), readings JSON);""")
 print('Database ready to go!')
 
 
@@ -30,10 +31,12 @@ def hello_world():
     # Handle POST
     else:
         # Get the reading
-        reading = request.data
+        json_data = json.loads(request.data)
 
         # Store it in the DB
-        cur.execute("""INSERT INTO OBDREADINGS(reading) VALUES(%s);""", (reading,))
+        cur.execute("""INSERT INTO OBDREADINGS(vin, unix_timestamp, latitude, longitude, readings)
+                    VALUES(%s, %s, %s, %s, %s);""",
+                    (json_data['vin'], json_data['timestamp'], json_data['latitude'], json_data['longitude'], json.dumps(json_data['readings'])))
         conn.commit()
 
         # Send okie-dokie response

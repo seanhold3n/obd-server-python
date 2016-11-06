@@ -33,7 +33,7 @@ def hello_world():
         reading = request.data
 
         # Store it in the DB
-        cur.execute("""INSERT INTO OBDREADINGS(reading) VALUES(%s);""", (tuple(reading)))
+        cur.execute("""INSERT INTO OBDREADINGS(reading) VALUES(%s);""", (reading,))
         conn.commit()
 
         # Send okie-dokie response

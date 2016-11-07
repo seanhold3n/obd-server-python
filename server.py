@@ -22,13 +22,13 @@ cur.execute("""CREATE TABLE IF NOT EXISTS obdreadings(vin TEXT, unix_timestamp I
 print('Database ready to go!')
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST', 'PUT'])
 def home():
     # Handle GET
     if request.method == 'GET':
         return 'Hello World!\n'
 
-    # Handle POST
+    # Handle POST and PUT
     else:
         # Get the reading
         json_data = json.loads(request.data)

@@ -1,5 +1,5 @@
 # obd-server-python
-Lightweight OBD server written in Python.  This is designed for use with the [android-obd-reader](https://github.com/pires/android-obd-reader) app.
+Lightweight server written in Python for storing OBD-II readings, similar to the [obd-server by pires](https://github.com/pires/obd-server).  This is designed for use with the [android-obd-reader](https://github.com/pires/android-obd-reader) app, also by pires.
 
 ## Pre-requisites
 The server requires the following to read and store OBD data:

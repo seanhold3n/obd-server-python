@@ -32,6 +32,7 @@ def home():
     else:
         # Get the reading
         json_data = json.loads(request.data)
+        print(str('Received JSON data: ' + str(json_data)))
 
         # Store it in the DB
         cur.execute("""INSERT INTO obdreadings(vin, unix_timestamp, latitude, longitude, readings)

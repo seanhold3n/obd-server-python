@@ -18,7 +18,7 @@ conn = psycopg2.connect(
         port=url.port
     )
 cur = conn.cursor()
-cur.execute("""CREATE TABLE IF NOT EXISTS obdreadings(vin TEXT, unix_timestamp INTEGER, latitude DECIMAL(9,6), longitude DECIMAL(9,6), readings JSON);""")
+cur.execute("""CREATE TABLE IF NOT EXISTS obdreadings(vin TEXT, unix_timestamp BIGINT, latitude DECIMAL(11,8), longitude DECIMAL(11,8), readings JSON);""")
 print('Database ready to go!')
 
 

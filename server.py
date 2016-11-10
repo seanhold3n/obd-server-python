@@ -43,6 +43,15 @@ def home():
         return Response(status=200)
 
 
+@app.route('/view')
+def view_vins():
+    # Get a list of all stored vins
+    cur.execute("""SELECT DISTINCT vin FROM obdreadings;""")
+
+    # Return vin list
+    return 'Available VIN records: {}'.format(str(cur.fetchall()));
+
+
 @app.route('/view/<vin>')
 def view_vin(vin):
     # Get the vin records from the database

@@ -11,7 +11,7 @@ In addition, the server requires the installation of Flask and Psycopg2 for the 
 ## Usage
 Run server.py.  That's it!  You may now send your POST or PUT requests to the server.
 
-You may also view all of the logs for a given VIN by going to `/view/<vin>`.
+You may also view all of the logs for a given vehicle ID by going to `/view/<wehicleid>`.
 
 ## Configuration
 By default, the server will bind to port 5000, or to a port specified by a `PORT` environment variable.

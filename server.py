@@ -18,7 +18,7 @@ conn = psycopg2.connect(
         port=url.port
     )
 cur = conn.cursor()
-cur.execute("""CREATE TABLE IF NOT EXISTS obdreadings(vin TEXT, unix_timestamp BIGINT, latitude DECIMAL(11,8), longitude DECIMAL(11,8), readings JSON);""")
+cur.execute("""CREATE TABLE IF NOT EXISTS obdreadings(vehicleid TEXT, unix_timestamp BIGINT, latitude DECIMAL(11,8), longitude DECIMAL(11,8), altitude DECIMAL(6,1), readings JSON);""")
 print('Database ready to go!')
 
 
@@ -34,9 +34,10 @@ def home():
         json_data = json.loads(request.data)
 
         # Store it in the DB
-        cur.execute("""INSERT INTO obdreadings(vin, unix_timestamp, latitude, longitude, readings)
+        cur.execute("""INSERT INTO obdreadings(vehicleid, unix_timestamp, latitude, longitude, altitude, readings)
                     VALUES(%s, %s, %s, %s, %s);""",
-                    (json_data['vin'], json_data['timestamp'], json_data['latitude'], json_data['longitude'], json.dumps(json_data['readings'])))
+                    (json_data['vehicleid'], json_data['timestamp'], json_data['latitude'], json_data['longitude'],
+                     json_data['altitude'], json.dumps(json_data['readings'])))
         conn.commit()
 
         # Send okie-dokie response

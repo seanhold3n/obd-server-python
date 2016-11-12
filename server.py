@@ -45,18 +45,18 @@ def home():
 
 
 @app.route('/view')
-def view_vins():
-    # Get a list of all stored vins
-    cur.execute("""SELECT DISTINCT vin FROM obdreadings;""")
+def view_ids():
+    # Get a list of all stored vehicleids
+    cur.execute("""SELECT DISTINCT vehicleid FROM obdreadings;""")
 
     # Return vin list
     return 'Available VIN records: {}'.format(str(cur.fetchall()));
 
 
-@app.route('/view/<vin>')
-def view_vin(vin):
-    # Get the vin records from the database
-    cur.execute("""SELECT * FROM obdreadings WHERE vin=%s""", (vin,))
+@app.route('/view/<vehicleid>')
+def view_id(vehicleid):
+    # Get the vehicleid records from the database
+    cur.execute("""SELECT * FROM obdreadings WHERE vehicleid=%s""", (vehicleid,))
     return str(cur.fetchall());
 
 

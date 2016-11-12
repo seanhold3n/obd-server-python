@@ -18,7 +18,7 @@ conn = psycopg2.connect(
         port=url.port
     )
 cur = conn.cursor()
-cur.execute("""CREATE TABLE IF NOT EXISTS obdreadings(vin TEXT, unix_timestamp BIGINT, latitude DECIMAL(11,8), longitude DECIMAL(11,8), readings JSON);""")
+cur.execute("""CREATE TABLE IF NOT EXISTS obdreadings(vehicleid TEXT, unix_timestamp BIGINT, latitude DECIMAL(11,8), longitude DECIMAL(11,8), readings JSON);""")
 print('Database ready to go!')
 
 
@@ -33,10 +33,14 @@ def home():
         # Get the reading
         json_data = json.loads(request.data)
 
+        # Print the readings
+        print str(json_data)
+
         # Store it in the DB
-        cur.execute("""INSERT INTO obdreadings(vin, unix_timestamp, latitude, longitude, readings)
+        cur.execute("""INSERT INTO obdreadings(vehicleid, unix_timestamp, latitude, longitude, readings)
                     VALUES(%s, %s, %s, %s, %s);""",
-                    (json_data['vin'], json_data['timestamp'], json_data['latitude'], json_data['longitude'], json.dumps(json_data['readings'])))
+                    (json_data['vehicleid'], json_data['timestamp'], json_data['latitude'], json_data['longitude'],
+                     json.dumps(json_data['readings'])))
         conn.commit()
 
         # Send okie-dokie response
@@ -44,18 +48,18 @@ def home():
 
 
 @app.route('/view')
-def view_vins():
-    # Get a list of all stored vins
-    cur.execute("""SELECT DISTINCT vin FROM obdreadings;""")
+def view_ids():
+    # Get a list of all stored vehicleids
+    cur.execute("""SELECT DISTINCT vehicleid FROM obdreadings;""")
 
     # Return vin list
     return 'Available VIN records: {}'.format(str(cur.fetchall()));
 
 
-@app.route('/view/<vin>')
-def view_vin(vin):
-    # Get the vin records from the database
-    cur.execute("""SELECT * FROM obdreadings WHERE vin=%s""", (vin,))
+@app.route('/view/<vehicleid>')
+def view_id(vehicleid):
+    # Get the vehicleid records from the database
+    cur.execute("""SELECT * FROM obdreadings WHERE vehicleid=%s""", (vehicleid,))
     return str(cur.fetchall());
 
 

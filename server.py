@@ -18,10 +18,7 @@ conn = psycopg2.connect(
         port=url.port
     )
 cur = conn.cursor()
-
-# Set up obdreadings table
-OBD_TABLE_NAME = 'obdreadings'
-cur.execute("""CREATE TABLE IF NOT EXISTS %s(vehicleid TEXT, unix_timestamp BIGINT, latitude DECIMAL(11,8), longitude DECIMAL(11,8), readings JSON);""", (OBD_TABLE_NAME,))
+cur.execute("""CREATE TABLE IF NOT EXISTS obdreadings(vehicleid TEXT, unix_timestamp BIGINT, latitude DECIMAL(11,8), longitude DECIMAL(11,8), readings JSON);""")
 print('Database ready to go!')
 
 
@@ -40,9 +37,9 @@ def home():
         print str(json_data)
 
         # Store it in the DB
-        cur.execute("""INSERT INTO %s(vehicleid, unix_timestamp, latitude, longitude, readings)
+        cur.execute("""INSERT INTO obdreadings(vehicleid, unix_timestamp, latitude, longitude, readings)
                     VALUES(%s, %s, %s, %s, %s);""",
-                    (OBD_TABLE_NAME, json_data['vehicleid'], json_data['timestamp'], json_data['latitude'], json_data['longitude'],
+                    (json_data['vehicleid'], json_data['timestamp'], json_data['latitude'], json_data['longitude'],
                      json.dumps(json_data['readings'])))
         conn.commit()
 
@@ -53,7 +50,7 @@ def home():
 @app.route('/view')
 def view_ids():
     # Get a list of all stored vehicleids
-    cur.execute("""SELECT DISTINCT vehicleid FROM %s;""", (OBD_TABLE_NAME,))
+    cur.execute("""SELECT DISTINCT vehicleid FROM obdreadings;""")
 
     # Return vin list
     return 'Available VIN records: {}'.format(str(cur.fetchall()));
@@ -62,7 +59,7 @@ def view_ids():
 @app.route('/view/<vehicleid>')
 def view_id(vehicleid):
     # Get the vehicleid records from the database
-    cur.execute("""SELECT * FROM %s WHERE vehicleid=%s""", (OBD_TABLE_NAME, vehicleid))
+    cur.execute("""SELECT * FROM obdreadings WHERE vehicleid=%s""", (vehicleid,))
     return str(cur.fetchall());
 
 

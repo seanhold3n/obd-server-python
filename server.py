@@ -35,14 +35,19 @@ def view_ids():
     db.getCur().execute("""SELECT DISTINCT vehicleid FROM obdreadings;""")
 
     # Return vin list
-    return 'Available VIN records: {}'.format(str(db.getCur().fetchall()));
+    response = Response('Available VIN records: {}'.format(str(db.getCur().fetchall())))
+    response.headers['Content-Type'] = 'text/plain'
+    return response;
 
 
 @app.route('/view/<vehicleid>')
 def view_id(vehicleid):
     # Get the vehicleid records from the database
     db.getCur().execute("""SELECT * FROM obdreadings WHERE vehicleid=%s;""", (vehicleid,))
-    return str(db.getCur().fetchall());
+
+    response = Response(str(db.getCur().fetchall()))
+    response.headers['Content-Type'] = 'text/plain'
+    return response;
 
 
 if __name__ == '__main__':

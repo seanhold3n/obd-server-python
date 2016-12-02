@@ -1,25 +1,11 @@
 import json
 import os
-import psycopg2
-import urlparse
-from flask import Flask, request, Response
+from flask import Flask, request, Response, jsonify
 
+# Import the database
+import db
 
 app = Flask(__name__)
-
-
-# Open DB connection
-url = urlparse.urlparse(os.environ["DATABASE_URL"])
-conn = psycopg2.connect(
-        database=url.path[1:],
-        user=url.username,
-        password=url.password,
-        host=url.hostname,
-        port=url.port
-    )
-cur = conn.cursor()
-cur.execute("""CREATE TABLE IF NOT EXISTS obdreadings(vehicleid TEXT, unix_timestamp BIGINT, latitude DECIMAL(11,8), longitude DECIMAL(11,8), readings JSON);""")
-print('Database ready to go!')
 
 
 @app.route('/', methods=['GET', 'POST', 'PUT'])
@@ -37,11 +23,7 @@ def home():
         print str(json_data)
 
         # Store it in the DB
-        cur.execute("""INSERT INTO obdreadings(vehicleid, unix_timestamp, latitude, longitude, readings)
-                    VALUES(%s, %s, %s, %s, %s);""",
-                    (json_data['vehicleid'], json_data['timestamp'], json_data['latitude'], json_data['longitude'],
-                     json.dumps(json_data['readings'])))
-        conn.commit()
+        db.put(json_data)
 
         # Send okie-dokie response
         return Response(status=200)
@@ -50,17 +32,17 @@ def home():
 @app.route('/view')
 def view_ids():
     # Get a list of all stored vehicleids
-    cur.execute("""SELECT DISTINCT vehicleid FROM obdreadings;""")
+    db.getCur().execute("""SELECT DISTINCT vehicleid FROM obdreadings;""")
 
     # Return vin list
-    return 'Available VIN records: {}'.format(str(cur.fetchall()));
+    return 'Available VIN records: {}'.format(str(db.getCur().fetchall()));
 
 
 @app.route('/view/<vehicleid>')
 def view_id(vehicleid):
     # Get the vehicleid records from the database
-    cur.execute("""SELECT * FROM obdreadings WHERE vehicleid=%s""", (vehicleid,))
-    return str(cur.fetchall());
+    db.getCur().execute("""SELECT * FROM obdreadings WHERE vehicleid=%s;""", (vehicleid,))
+    return str(db.getCur().fetchall());
 
 
 if __name__ == '__main__':

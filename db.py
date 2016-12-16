@@ -4,7 +4,7 @@ import psycopg2
 import urlparse
 
 # Open DB connection
-url = urlparse.urlparse(os.environ["DATABASE_URL"])
+url = urlparse.urlparse(os.environ["HEROKU_POSTGRESQL_PUCE_URL"])
 conn = psycopg2.connect(
         database=url.path[1:],
         user=url.username,

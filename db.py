@@ -4,7 +4,7 @@ import psycopg2
 import urlparse
 
 # Open DB connection
-url = urlparse.urlparse(os.environ["HEROKU_POSTGRESQL_PUCE_URL"])
+url = urlparse.urlparse(os.environ["DATABASE_URL"])
 conn = psycopg2.connect(
         database=url.path[1:],
         user=url.username,
@@ -13,7 +13,14 @@ conn = psycopg2.connect(
         port=url.port
     )
 cur = conn.cursor()
-cur.execute("""CREATE TABLE IF NOT EXISTS obdreadings(vehicleid TEXT, unix_timestamp BIGINT, latitude DECIMAL(11,8), longitude DECIMAL(11,8), readings JSON);""")
+cur.execute("""CREATE TABLE IF NOT EXISTS obdreadings(
+                      vehicleid TEXT           NOT NULL,
+                      unix_timestamp BIGINT    NOT NULL,
+                      latitude DECIMAL(11,8),
+                      longitude DECIMAL(11,8),
+                      readings JSON,
+                      PRIMARY KEY (vehicleid, unix_timestamp));""")
+conn.commit();
 print('Database ready to go!')
 
 

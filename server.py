@@ -83,6 +83,23 @@ def get_latlong_json():
     return response
 
 
+@app.route('/realtime')
+def realtime():
+    # Get 20 most recent entries
+    db.getCur().execute("""SELECT * from obdreadings ORDER BY unix_timestamp DESC LIMIT 20""")
+
+    # Publish it
+    result_str = ''
+    for record in db.getCur():
+            result_str += '{}\n'.format(record)
+
+    # Create and send response
+    response = Response(result_str)
+    response.headers['Content-Type'] = 'text/plain'
+    return response
+
+
+
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port, debug=True)

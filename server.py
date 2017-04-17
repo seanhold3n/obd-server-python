@@ -1,6 +1,6 @@
 import json
 import os
-from flask import Flask, request, Response, jsonify
+from flask import Flask, request, Response, jsonify, render_template
 
 # Import the database
 import db
@@ -34,10 +34,13 @@ def view_ids():
     # Get a list of all stored vehicleids
     db.getCur().execute("""SELECT DISTINCT vehicleid FROM obdreadings;""")
 
-    # Return vin list
-    response = Response('Available VIN records: {}'.format(str(db.getCur().fetchall())))
-    response.headers['Content-Type'] = 'text/plain'
-    return response;
+    # Return id list
+    ids = db.getCur().fetchall()
+
+    # Since the above returns tuples, use a list comprehension to get the first elements
+    ids = [x[0] for x in ids]
+
+    return render_template('view.html', ids=ids)
 
 
 @app.route('/view/<vehicleid>')

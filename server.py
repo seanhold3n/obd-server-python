@@ -12,7 +12,7 @@ app = Flask(__name__)
 def home():
     # Handle GET
     if request.method == 'GET':
-        return 'Hello World!\n'
+        return render_template('index.html')
 
     # Handle POST and PUT
     else:

@@ -49,7 +49,7 @@ def view_id(vehicleid):
     db.getCur().execute("""SELECT * FROM obdreadings WHERE vehicleid=%s;""", (vehicleid,))
 
     response = Response(str(db.getCur().fetchall()))
-    response.headers['Content-Type'] = 'text/plain'
+    response.mimetype = 'text/plain'
     return response;
 
 
@@ -70,6 +70,7 @@ def get_latlong_json():
 
     result_str += '(['
 
+    # TODO consider jsonify here
     for record in db.getCur():
         unix_time = record[0]
         lat = record[1]
@@ -94,11 +95,11 @@ def realtime():
     # Publish it
     result_str = ''
     for record in db.getCur():
-            result_str += '{}\n'.format(record)
+        result_str += '{}\n'.format(record)
 
     # Create and send response
     response = Response(result_str)
-    response.headers['Content-Type'] = 'text/plain'
+    response.mimetype = 'text/plain'
     return response
 
 

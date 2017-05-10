@@ -31,16 +31,19 @@ def home():
 
 @app.route('/view')
 def view_ids():
+    # Get total number of database entries
+    db.getCur().execute("""SELECT COUNT(*) FROM obdreadings;""")
+    # Get the first item of the first tuple in the returned list
+    num_rows = (db.getCur().fetchall()[0])[0]
+
     # Get a list of all stored vehicleids
     db.getCur().execute("""SELECT DISTINCT vehicleid FROM obdreadings;""")
-
     # Return id list
     ids = db.getCur().fetchall()
-
     # Since the above returns tuples, use a list comprehension to get the first elements
     ids = [x[0] for x in ids]
 
-    return render_template('view.html', ids=ids)
+    return render_template('view.html', num_rows=num_rows, ids=ids)
 
 
 @app.route('/view/<vehicleid>')

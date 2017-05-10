@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>VehicleIDs :: OBD Server</title>
+  <title>Database Summary :: OBD Server</title>
 </head>
 <body>
-  Available vehicles:
-  <ul>
-  {% for id in ids %}
-    <li> <a href="./view/{{id}}">{{id}}</a> </li>
-  {% endfor %}
-  </ul>
+    <p>
+    Database statistics:
+    <ul>
+    <li> Total database rows: {{num_rows}} </li>
+    </ul>
+    </p>
+
+	<p>
+	Available vehicles:
+	<ul>
+    {% for id in ids %}
+	<li> <a href="./view/{{id}}">{{id}}</a> </li>
+	{% endfor %}
+	</ul>
+    </p>
 </body>
 </html>

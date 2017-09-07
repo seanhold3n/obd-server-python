@@ -43,7 +43,15 @@ def view_ids():
     # Since the above returns tuples, use a list comprehension to get the first elements
     ids = [x[0] for x in ids]
 
-    return render_template('view.html', num_rows=num_rows, ids=ids)
+    # Get the most recent timestamp
+    db.getCur().execute("""SELECT unix_timestamp from obdreadings ORDER BY unix_timestamp DESC LIMIT 1;""")
+    timestamp = db.getCur().fetchone()[0] # [0] because result is a tuple - get the first element
+    # Also convert timestamp to human-readable time
+    int_timestamp_secs = int(timestamp) / 1000
+    ts_utc = datetime.utcfromtimestamp(int_timestamp_secs).strftime('%Y-%m-%d %H:%M:%S')
+    ts_local = datetime.fromtimestamp(int_timestamp_secs).strftime('%Y-%m-%d %H:%M:%S')
+
+    return render_template('view.html', num_rows=num_rows, ids=ids, ts_unix=timestamp, ts_utc=ts_utc, ts_local=ts_local)
 
 
 @app.route('/view/<vehicleid>')

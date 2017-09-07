@@ -20,7 +20,7 @@ cur.execute("""CREATE TABLE IF NOT EXISTS obdreadings(
                       longitude DECIMAL(11,8),
                       readings JSON,
                       PRIMARY KEY (vehicleid, unix_timestamp));""")
-conn.commit();
+conn.commit()
 print('Database ready to go!')
 
 

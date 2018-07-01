@@ -5,6 +5,8 @@ from datetime import datetime
 
 # Import the database
 import db
+# Import API functions
+import api
 
 app = Flask(__name__)
 
@@ -68,35 +70,9 @@ def view_id(vehicleid):
 @app.route('/api/latlong.json')
 # @crossdomain(origin='*')
 def get_latlong_json():
-    # Get speed and timestamp data from database
-    db.getCur().execute(
-        """SELECT unix_timestamp,latitude,longitude from obdreadings ORDER BY unix_timestamp DESC LIMIT 100;""")  # LIMIT 500 OFFSET 100;""")
+    return api.get_latlong_json()
 
-    # Start with callback handler
-    callback_str = request.args.get('callback')
-    if callback_str is not None:
-        result_str = callback_str
-        print(callback_str)
-    else:
-        result_str = 'callback'
 
-    result_str += '(['
-
-    # TODO consider jsonify here
-    for record in db.getCur():
-        unix_time = record[0]
-        lat = record[1]
-        long = record[2]
-        result_str += '[{},{},{}],\n'.format(unix_time, lat, long)
-
-    # Append end part
-    result_str += ']);'
-
-    # Create and send response
-    response = Response(result_str)
-    response.headers['Content-Type'] = 'application/json'
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    return response
 
 
 @app.route('/realtime')
@@ -113,7 +89,6 @@ def realtime():
     response = Response(result_str)
     response.mimetype = 'text/plain'
     return response
-
 
 
 if __name__ == '__main__':

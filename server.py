@@ -73,6 +73,10 @@ def get_latlong_json():
     return api.get_latlong_json()
 
 
+@app.route('/api/<vehicleid>/speed.json')
+# @crossdomain(origin='*')
+def get_speed_json(vehicleid):
+    return api.get_speed_json(vehicleid)
 
 
 @app.route('/realtime')

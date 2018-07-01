@@ -4,8 +4,11 @@ from flask import request, Response
 
 def get_latlong_json():
     # Get speed and timestamp data from database
-    db.getCur().execute(
-        """SELECT unix_timestamp,latitude,longitude from obdreadings ORDER BY unix_timestamp DESC LIMIT 100;""")  # LIMIT 500 OFFSET 100;""")
+    db.getCur().execute("""
+        SELECT unix_timestamp,latitude,longitude
+        FROM obdreadings
+        ORDER BY unix_timestamp DESC
+        LIMIT 100""")
 
     # Start with callback handler
     callback_str = request.args.get('callback')
@@ -36,9 +39,10 @@ def get_latlong_json():
 
 def get_speed_json(vehicleid):
     # Get speed and timestamp data from database
-    # cur.execute("""SELECT unix_timestamp,readings->>'SPEED' from obdreadings;""")
-    db.getCur().execute(
-        """SELECT unix_timestamp,readings->>'SPEED' from obdreadings ORDER BY unix_timestamp ASC OFFSET 5500""")  # LIMIT 500 OFFSET 100;""")
+    db.getCur().execute("""
+        SELECT unix_timestamp,readings->>'SPEED'
+        FROM obdreadings
+        ORDER BY unix_timestamp ASC""")
 
     # Start with callback handler
     callback_str = request.args.get('callback')
@@ -55,14 +59,9 @@ def get_speed_json(vehicleid):
         speed_str = record[1]
 
         # Check speed string for validity
-        valid = speed_str is not None
-        # better
-        valid = str(speed_str).endswith('mph')
-        if valid:
+        if str(speed_str).endswith('mph'):
             # Convert speed_str to float value
             speed = eval(speed_str.rstrip('mph'))
-            # result_str += '[Date.UTC({}),{}],\n'.format(unix_time, speed)
-            # result_str += '[new Date({}),{}],\n'.format(unix_time, speed)
             result_str += '[{},{}],\n'.format(unix_time, speed)
 
     # Append end part

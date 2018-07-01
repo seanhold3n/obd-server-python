@@ -16,3 +16,17 @@ You may also view all of the logs for a given vehicle ID by going to `/view/<veh
 ## Configuration
 By default, the server will bind to port 5000, or to a port specified by a `PORT` environment variable.
 The server will connect to a database through a URL given in the `DATABASE_URL` environment variable.
+
+## Docker
+You can build and run this project using Docker.
+```sh
+docker build -t obdserver .
+
+docker run -it --rm \
+    -p "5000:5000" \
+    -e DATABASE_URL="postgres://user:pass@host:port/db" \
+    obdserver
+```
+
+Or, if that's one command too many, set the database URL in `docker-compose.yml` and 
+run `docker-compose up`!
